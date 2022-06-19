@@ -9,72 +9,84 @@
 /* global zxcvbnts */ // js/vendor/zxcvbn-ts.js
 
 /**
- * general function, usually for data manipulation pages
- *
+ * General functions, usually for data manipulation pages.
+ * @type {object}
  */
 var Functions = {};
 
 /**
- * @var {number} ajaxMessageCount Number of AJAX messages shown since page load
+ * Number of AJAX messages shown since page load.
+ * @type {number}
  */
-var ajaxMessageCount = 0;
+let ajaxMessageCount = 0;
 
 /**
- * @var codeMirrorEditor object containing CodeMirror editor of the query editor in SQL tab
+ * Object containing CodeMirror editor of the query editor in SQL tab.
+ * @type {(object|boolean|null)}
  */
 var codeMirrorEditor = false;
 
 /**
- * @var codeMirrorInlineEditor object containing CodeMirror editor of the inline query editor
+ * Object containing CodeMirror editor of the inline query editor.
+ * @type {(object|boolean|null)}
  */
-var codeMirrorInlineEditor = false;
+let codeMirrorInlineEditor = false;
 
 /**
- * @var {boolean} sqlAutoCompleteInProgress shows if Table/Column name autocomplete AJAX is in progress
+ * Shows if Table/Column name autocomplete AJAX is in progress.
+ * @type {boolean}
  */
-var sqlAutoCompleteInProgress = false;
+let sqlAutoCompleteInProgress = false;
 
 /**
- * @var sqlAutoComplete object containing list of columns in each table
+ * Object containing list of columns in each table.
+ * @type {(array|boolean)}
  */
-var sqlAutoComplete = false;
+let sqlAutoComplete = false;
 
 /**
- * @var {string} sqlAutoCompleteDefaultTable string containing default table to autocomplete columns
+ * String containing default table to autocomplete columns.
+ * @type {string}
  */
-var sqlAutoCompleteDefaultTable = '';
+let sqlAutoCompleteDefaultTable = '';
 
 /**
- * @var {array} centralColumnList array to hold the columns in central list per db.
+ * Array to hold the columns in central list per db.
+ * @type {array}
  */
 var centralColumnList = [];
 
 /**
- * @var {array} primaryIndexes array to hold 'Primary' index columns.
+ * Array to hold 'Primary' index columns.
+ * @type {array}
  */
 // eslint-disable-next-line no-unused-vars
 var primaryIndexes = [];
 
 /**
- * @var {array} uniqueIndexes array to hold 'Unique' index columns.
+ * Array to hold 'Unique' index columns.
+ * @type {array}
  */
 // eslint-disable-next-line no-unused-vars
 var uniqueIndexes = [];
 
 /**
- * @var {array} indexes array to hold 'Index' columns.
+ * Array to hold 'Index' columns.
+ * @type {array}
  */
 // eslint-disable-next-line no-unused-vars
 var indexes = [];
 
 /**
- * @var {array} fulltextIndexes array to hold 'Fulltext' columns.
+ * Array to hold 'Fulltext' columns.
+ * @type {array}
  */
 // eslint-disable-next-line no-unused-vars
 var fulltextIndexes = [];
 
 /**
- * @var {array} spatialIndexes array to hold 'Spatial' columns.
+ * Array to hold 'Spatial' columns.
+ * @type {array}
  */
 // eslint-disable-next-line no-unused-vars
 var spatialIndexes = [];
@@ -91,6 +103,13 @@ $.ajaxPrefilter(function (options, originalOptions) {
         options.data = $.extend(originalOptions.data, { '_nocache' : nocache, 'token': CommonParams.get('token') });
     }
 });
+
+/**
+ * @return {number}
+ */
+Functions.getAjaxMessageCount = function () {
+    return ajaxMessageCount;
+};
 
 /**
  * Adds a date/time picker to an element
