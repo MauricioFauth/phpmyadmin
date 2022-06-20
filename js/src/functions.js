@@ -1,4 +1,5 @@
 
+/* global codeMirrorEditor:writable, centralColumnList */
 /* global isStorageSupported */ // js/config.js
 /* global ChartType, ColumnType, DataTable, JQPlotChartFactory */ // js/chart.js
 /* global DatabaseStructure */ // js/database/structure.js
@@ -12,7 +13,7 @@
  * General functions, usually for data manipulation pages.
  * @type {object}
  */
-var Functions = {};
+window.Functions = {};
 
 /**
  * Number of AJAX messages shown since page load.
@@ -24,7 +25,7 @@ let ajaxMessageCount = 0;
  * Object containing CodeMirror editor of the query editor in SQL tab.
  * @type {(object|boolean|null)}
  */
-var codeMirrorEditor = false;
+window.codeMirrorEditor = false;
 
 /**
  * Object containing CodeMirror editor of the inline query editor.
@@ -54,42 +55,37 @@ let sqlAutoCompleteDefaultTable = '';
  * Array to hold the columns in central list per db.
  * @type {array}
  */
-var centralColumnList = [];
+window.centralColumnList = [];
 
 /**
  * Array to hold 'Primary' index columns.
  * @type {array}
  */
-// eslint-disable-next-line no-unused-vars
-var primaryIndexes = [];
+window.primaryIndexes = [];
 
 /**
  * Array to hold 'Unique' index columns.
  * @type {array}
  */
-// eslint-disable-next-line no-unused-vars
-var uniqueIndexes = [];
+window.uniqueIndexes = [];
 
 /**
  * Array to hold 'Index' columns.
  * @type {array}
  */
-// eslint-disable-next-line no-unused-vars
-var indexes = [];
+window.indexes = [];
 
 /**
  * Array to hold 'Fulltext' columns.
  * @type {array}
  */
-// eslint-disable-next-line no-unused-vars
-var fulltextIndexes = [];
+window.fulltextIndexes = [];
 
 /**
  * Array to hold 'Spatial' columns.
  * @type {array}
  */
-// eslint-disable-next-line no-unused-vars
-var spatialIndexes = [];
+window.spatialIndexes = [];
 
 /**
  * Make sure that ajax requests will not be cached
@@ -879,23 +875,29 @@ Functions.checkTableEditForm = function (theForm, fieldsCnt) {
 
 /**
  * True if last click is to check a row.
+ * @type {boolean}
  */
-var lastClickChecked = false;
+let lastClickChecked = false;
 
 /**
- * Zero-based index of last clicked row.
- * Used to handle the shift + click event in the code above.
+ * Zero-based index of last clicked row. Used to handle the shift + click event in the code above.
+ * @type {number}
  */
-var lastClickedRow = -1;
+let lastClickedRow = -1;
 
 /**
  * Zero-based index of last shift clicked row.
+ * @type {number}
  */
-var lastShiftClickedRow = -1;
+let lastShiftClickedRow = -1;
 
-var idleSecondsCounter = 0;
-var incInterval;
-var updateTimeout;
+/** @type {number} */
+let idleSecondsCounter = 0;
+/** @type {number} */
+let incInterval;
+/** @type {number} */
+let updateTimeout;
+
 AJAX.registerTeardown('functions.js', function () {
     clearTimeout(updateTimeout);
     clearInterval(incInterval);
@@ -1000,6 +1002,7 @@ AJAX.registerOnload('functions.js', function () {
         updateTimeout = window.setTimeout(UpdateIdleTime, interval);
     }
 });
+
 /**
  * Unbind all event handlers before tearing down a page
  */
@@ -2445,7 +2448,6 @@ AJAX.registerOnload('functions.js', function () {
         });
 });
 
-
 /**
  * Validates the password field in a form
  *
@@ -2642,6 +2644,7 @@ AJAX.registerTeardown('functions.js', function () {
     $(document).off('change', 'input.allow_null');
     $(document).off('change', '.create_table_form select[name=tbl_storage_engine]');
 });
+
 /**
  * Toggle the hiding/showing of the "Open in ENUM/SET editor" message when
  * the page loads and when the selected data type changes
@@ -3092,6 +3095,7 @@ Functions.checkIndexName = function (formId) {
 AJAX.registerTeardown('functions.js', function () {
     $(document).off('click', '#index_frm input[type=submit]');
 });
+
 AJAX.registerOnload('functions.js', function () {
     /**
      * Handler for adding more columns to an index in the editor
@@ -3131,6 +3135,7 @@ AJAX.registerOnload('functions.js', function () {
         }
     });
 });
+
 Functions.indexDialogModal = function (routeUrl, url, title, callbackSuccess, callbackFailure) {
     /* Remove the hidden dialogs if there are*/
     var modal = $('#indexDialogModal');
@@ -3465,6 +3470,7 @@ Functions.toggleButton = function ($obj) {
 AJAX.registerTeardown('functions.js', function () {
     $('div.toggle-container').off('click');
 });
+
 /**
  * Initialise all toggle buttons
  */
@@ -3653,6 +3659,7 @@ AJAX.registerOnload('functions.js', function () {
     }
     Functions.highlightSql($('body'));
 });
+
 AJAX.registerTeardown('functions.js', function () {
     if (codeMirrorEditor) {
         $('#sqlquery').text(codeMirrorEditor.getValue());
@@ -3660,6 +3667,7 @@ AJAX.registerTeardown('functions.js', function () {
         codeMirrorEditor = false;
     }
 });
+
 AJAX.registerOnload('functions.js', function () {
     // initializes all lock-page elements lock-id and
     // val-hash data property
@@ -3875,7 +3883,7 @@ $(function () {
     });
 });
 
-var checkboxesSel = 'input.checkall:checkbox:enabled';
+const checkboxesSel = 'input.checkall:checkbox:enabled';
 Functions.checkboxesSel = checkboxesSel;
 
 /**
@@ -3972,6 +3980,7 @@ $(document).on('keyup', '#filterText', function () {
     }, 300);
     $('#filter-rows-count').html(count);
 });
+
 AJAX.registerOnload('functions.js', function () {
     /* Trigger filtering of the list based on incoming database name */
     var $filter = $('#filterText');
@@ -4137,8 +4146,7 @@ Functions.toggleDatepickerIfInvalid = function ($td, $inputField) {
  * Function to submit the login form after validation is done.
  * NOTE: do NOT use a module or it will break the callback, issue #15435
  */
-// eslint-disable-next-line no-unused-vars, camelcase
-var Functions_recaptchaCallback = function () {
+window.recaptchaCallback = function () {
     $('#login_form').trigger('submit');
 };
 
