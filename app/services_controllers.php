@@ -225,7 +225,7 @@ return [
         ],
         Database\Structure\AddPrefixTableController::class => [
             'class' => Database\Structure\AddPrefixTableController::class,
-            'arguments' => ['$dbi' => '@dbi', '$structureController' => '@' . Database\StructureController::class],
+            'arguments' => ['@dbi', '@' . ResponseFactory::class, '@' . FlashMessenger::class],
         ],
         Database\Structure\CentralColumns\AddController::class => [
             'class' => Database\Structure\CentralColumns\AddController::class,
