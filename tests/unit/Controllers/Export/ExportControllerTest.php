@@ -10,6 +10,7 @@ use PhpMyAdmin\Controllers\Export\ExportController;
 use PhpMyAdmin\Current;
 use PhpMyAdmin\DatabaseInterface;
 use PhpMyAdmin\Export\Export;
+use PhpMyAdmin\FlashMessenger;
 use PhpMyAdmin\Http\Factory\ResponseFactory;
 use PhpMyAdmin\Http\Factory\ServerRequestFactory;
 use PhpMyAdmin\Http\ServerRequest;
@@ -190,7 +191,12 @@ final class ExportControllerTest extends AbstractTestCase
             COMMIT;
             SQL;
 
-        $exportController = new ExportController(new ResponseRenderer(), new Export($dbi), ResponseFactory::create());
+        $exportController = new ExportController(
+            new ResponseRenderer(),
+            new Export($dbi),
+            ResponseFactory::create(),
+            new FlashMessenger(),
+        );
         $response = $exportController($request);
         $output = $this->getActualOutputForAssertion();
 
@@ -342,7 +348,12 @@ final class ExportControllerTest extends AbstractTestCase
         self::assertInstanceOf(Export::class, $export);
         (new ReflectionProperty(Export::class, 'dbi'))->setValue($export, $dbi);
 
-        $exportController = new ExportController(new ResponseRenderer(), $export, ResponseFactory::create());
+        $exportController = new ExportController(
+            new ResponseRenderer(),
+            $export,
+            ResponseFactory::create(),
+            new FlashMessenger(),
+        );
         $response = $exportController($request);
 
         $output = $this->getActualOutputForAssertion();
@@ -509,7 +520,12 @@ final class ExportControllerTest extends AbstractTestCase
         self::assertInstanceOf(Export::class, $export);
         (new ReflectionProperty(Export::class, 'dbi'))->setValue($export, $dbi);
 
-        $exportController = new ExportController(new ResponseRenderer(), $export, ResponseFactory::create());
+        $exportController = new ExportController(
+            new ResponseRenderer(),
+            $export,
+            ResponseFactory::create(),
+            new FlashMessenger(),
+        );
         $response = $exportController($request);
 
         self::assertNotNull($response);

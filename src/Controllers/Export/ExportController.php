@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace PhpMyAdmin\Controllers\Export;
 
+use Fig\Http\Message\StatusCodeInterface;
 use PhpMyAdmin\Config;
-use PhpMyAdmin\Container\ContainerBuilder;
-use PhpMyAdmin\Controllers\Database\ExportController as DatabaseExportController;
 use PhpMyAdmin\Controllers\InvocableController;
 use PhpMyAdmin\Core;
 use PhpMyAdmin\Current;
 use PhpMyAdmin\Encoding;
 use PhpMyAdmin\Exceptions\ExportException;
 use PhpMyAdmin\Export\Export;
+use PhpMyAdmin\FlashMessenger;
 use PhpMyAdmin\Http\Factory\ResponseFactory;
 use PhpMyAdmin\Http\Response;
 use PhpMyAdmin\Http\ServerRequest;
@@ -44,6 +44,7 @@ final class ExportController implements InvocableController
         private readonly ResponseRenderer $response,
         private readonly Export $export,
         private readonly ResponseFactory $responseFactory,
+        private readonly FlashMessenger $flashMessenger,
     ) {
     }
 
@@ -294,14 +295,11 @@ final class ExportController implements InvocableController
             if ($GLOBALS['export_type'] === 'database') {
                 $GLOBALS['num_tables'] = count($tableNames);
                 if ($GLOBALS['num_tables'] === 0) {
-                    $GLOBALS['message'] = Message::error(
-                        __('No tables found in database.'),
-                    );
-                    /** @var DatabaseExportController $controller */
-                    $controller = ContainerBuilder::getContainer()->get(DatabaseExportController::class);
-                    $controller($request);
+                    $message = Message::error(__('No tables were selected to be exported.'));
+                    $this->flashMessenger->addMessage($message->getContext(), $message->getMessage());
 
-                    return null;
+                    return $this->responseFactory->createResponse(StatusCodeInterface::STATUS_FOUND)
+                        ->withHeader('Location', Url::getFromRoute('/database/export', ['db' => Current::$database]));
                 }
             }
 

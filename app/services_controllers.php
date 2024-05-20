@@ -370,7 +370,7 @@ return [
         ],
         Export\ExportController::class => [
             'class' => Export\ExportController::class,
-            'arguments' => ['@response', '@export', '@' . ResponseFactory::class],
+            'arguments' => ['@response', '@export', '@' . ResponseFactory::class, '@' . FlashMessenger::class],
         ],
         Export\TablesController::class => [
             'class' => Export\TablesController::class,
