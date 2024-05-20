@@ -1,7 +1,7 @@
 {% extends 'table/page_with_secondary_tabs.twig' %}
 {% block content %}
 <h1 class="d-none d-print-block">{{ table }}</h1>
-<form method="post" action="{{ url('/table/structure') }}" name="fieldsForm" id="fieldsForm">
+<form method="post" action="{{ url('/table/structure', {'db': db, 'table': table}) }}" name="fieldsForm" id="fieldsForm" class="disableAjax">
     {{ get_hidden_inputs(db, table) }}
     <input type="hidden" name="table_type" value=
         {%- if db_is_system_schema -%}
@@ -249,13 +249,13 @@
                                     {{ get_icon('centralColumns_delete', t('Remove from central columns')) }}
                                 </a>
                             {% else %}
-                                <a class="{{ hide_structure_actions ? 'dropdown-item' : 'nav-link px-1' }}" href="{{ url('/table/structure/central-columns-add') }}" data-post="{{ get_common({
-                                  'db': db,
-                                  'table': table,
-                                  'selected_fld': [row.field],
-                                }) }}">
-                                    {{ get_icon('centralColumns_add', t('Add to central columns')) }}
-                                </a>
+                              <form class="disableAjax" action="{{ url('/table/structure/central-columns-add', {'db': db, 'table': table}) }}" method="post">
+                                {{ get_hidden_inputs(db, table) }}
+                                <input type="hidden" name="selected_fld[]" value="{{ row.field }}">
+                                <button class="{{ hide_structure_actions ? 'dropdown-item' : 'nav-link px-1' }}" type="submit">
+                                  {{ get_icon('centralColumns_add', t('Add to central columns')) }}
+                                </button>
+                              </form>
                             {% endif %}
                             </li>
                         {% endif %}
@@ -308,7 +308,7 @@
             </button>
 
             {% if relation_parameters.centralColumnsFeature is not null %}
-              <button class="btn btn-link mult_submit" type="submit" formaction="{{ url('/table/structure/central-columns-add') }}">
+              <button class="btn btn-link mult_submit" type="submit" formaction="{{ url('/table/structure/central-columns-add', {'db': db, 'table': table}) }}">
                 {{ get_icon('centralColumns_add', t('Add to central columns')) }}
               </button>
               <button class="btn btn-link mult_submit" type="submit" formaction="{{ url('/table/structure/central-columns-remove') }}">

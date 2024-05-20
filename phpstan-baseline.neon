@@ -4906,11 +4906,6 @@ parameters:
 			path: src/Controllers/Table/Structure/BrowseController.php
 
 		-
-			message: "#^Construct empty\\(\\) is not allowed\\. Use more strict comparison\\.$#"
-			count: 1
-			path: src/Controllers/Table/Structure/CentralColumnsAddController.php
-
-		-
 			message: "#^Parameter \\#4 \\$containingTable of method PhpMyAdmin\\\\Database\\\\CentralColumns\\:\\:syncUniqueColumns\\(\\) expects string, mixed given\\.$#"
 			count: 1
 			path: src/Controllers/Table/Structure/CentralColumnsAddController.php

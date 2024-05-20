@@ -433,9 +433,16 @@ AJAX.registerOnload('table/structure.js', function () {
      */
     $('body').on('click', '#fieldsForm button.mult_submit', function (e) {
         e.preventDefault();
-        var $form = $(this).parents('form');
-        var argsep = CommonParams.get('arg_separator');
-        var submitData = $form.serialize() + argsep + 'ajax_request=true' + argsep + 'ajax_page_request=true';
+        const $form = $(this).parents('form');
+        if (this.formAction.indexOf('/table/structure/central-columns-add') !== -1) {
+            $form.attr('action', this.formAction);
+            $form.trigger('submit');
+
+            return;
+        }
+
+        const argSeparator = CommonParams.get('arg_separator');
+        const submitData = $form.serialize() + argSeparator + 'ajax_request=true' + argSeparator + 'ajax_page_request=true';
 
         ajaxShowMessage();
         AJAX.source = $form;
