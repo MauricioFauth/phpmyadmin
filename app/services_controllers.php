@@ -1157,11 +1157,7 @@ return [
         ],
         Table\Structure\AddIndexController::class => [
             'class' => Table\Structure\AddIndexController::class,
-            'arguments' => [
-                '$response' => '@response',
-                '$structureController' => '@' . Table\StructureController::class,
-                '$indexes' => '@table_indexes',
-            ],
+            'arguments' => ['@response', '@table_indexes', '@' . ResponseFactory::class, '@' . FlashMessenger::class],
         ],
         Table\Structure\AddKeyController::class => [
             'class' => Table\Structure\AddKeyController::class,
@@ -1197,11 +1193,7 @@ return [
         ],
         Table\Structure\FulltextController::class => [
             'class' => Table\Structure\FulltextController::class,
-            'arguments' => [
-                '$response' => '@response',
-                '$structureController' => '@' . Table\StructureController::class,
-                '$indexes' => '@table_indexes',
-            ],
+            'arguments' => ['@response', '@table_indexes', '@' . ResponseFactory::class, '@' . FlashMessenger::class],
         ],
         Table\Structure\MoveColumnsController::class => [
             'class' => Table\Structure\MoveColumnsController::class,
@@ -1243,19 +1235,11 @@ return [
         ],
         Table\Structure\SpatialController::class => [
             'class' => Table\Structure\SpatialController::class,
-            'arguments' => [
-                '$response' => '@response',
-                '$structureController' => '@' . Table\StructureController::class,
-                '$indexes' => '@table_indexes',
-            ],
+            'arguments' => ['@response', '@table_indexes', '@' . ResponseFactory::class, '@' . FlashMessenger::class],
         ],
         Table\Structure\UniqueController::class => [
             'class' => Table\Structure\UniqueController::class,
-            'arguments' => [
-                '$response' => '@response',
-                '$structureController' => '@' . Table\StructureController::class,
-                '$indexes' => '@table_indexes',
-            ],
+            'arguments' => ['@response', '@table_indexes', '@' . ResponseFactory::class, '@' . FlashMessenger::class],
         ],
         Table\StructureController::class => [
             'class' => Table\StructureController::class,

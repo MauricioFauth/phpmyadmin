@@ -434,7 +434,13 @@ AJAX.registerOnload('table/structure.js', function () {
     $('body').on('click', '#fieldsForm button.mult_submit', function (e) {
         e.preventDefault();
         const $form = $(this).parents('form');
-        if (this.formAction.indexOf('/table/structure/central-columns-add') !== -1) {
+        if (
+            this.formAction.indexOf('/table/structure/central-columns-add') !== -1
+            || this.formAction.indexOf('/table/structure/unique') !== -1
+            || this.formAction.indexOf('/table/structure/index') !== -1
+            || this.formAction.indexOf('/table/structure/spatial') !== -1
+            || this.formAction.indexOf('/table/structure/fulltext') !== -1
+        ) {
             $form.attr('action', this.formAction);
             $form.trigger('submit');
 

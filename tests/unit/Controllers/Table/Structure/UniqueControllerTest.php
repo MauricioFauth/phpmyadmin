@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace PhpMyAdmin\Tests\Controllers\Table\Structure;
 
+use Fig\Http\Message\StatusCodeInterface;
 use PhpMyAdmin\Controllers\Table\Structure\UniqueController;
-use PhpMyAdmin\Controllers\Table\StructureController;
 use PhpMyAdmin\Current;
 use PhpMyAdmin\DatabaseInterface;
+use PhpMyAdmin\FlashMessenger;
+use PhpMyAdmin\Http\Factory\ResponseFactory;
 use PhpMyAdmin\Http\ServerRequest;
-use PhpMyAdmin\Message;
 use PhpMyAdmin\Table\Indexes;
 use PhpMyAdmin\Tests\AbstractTestCase;
 use PhpMyAdmin\Tests\Stubs\ResponseRenderer;
@@ -22,8 +23,7 @@ class UniqueControllerTest extends AbstractTestCase
     {
         Current::$database = 'test_db';
         Current::$table = 'test_table';
-        $GLOBALS['message'] = null;
-        $GLOBALS['sql_query'] = null;
+        $GLOBALS['sql_query'] = '';
 
         $dbiDummy = $this->createDbiDummy();
         $dbiDummy->addSelectDb('test_db');
@@ -32,14 +32,34 @@ class UniqueControllerTest extends AbstractTestCase
         DatabaseInterface::$instance = $dbi;
         $request = self::createStub(ServerRequest::class);
         $request->method('getParsedBodyParam')->willReturnMap([['selected_fld', [], ['test_field']]]);
-        $controllerStub = self::createMock(StructureController::class);
-        $controllerStub->expects(self::once())->method('__invoke')->with($request);
 
         $indexes = new Indexes(DatabaseInterface::getInstance());
-        $controller = new UniqueController(new ResponseRenderer(), $controllerStub, $indexes);
-        $controller($request);
+        $flashMessenger = new FlashMessenger();
+        $controller = new UniqueController(
+            new ResponseRenderer(),
+            $indexes,
+            ResponseFactory::create(),
+            $flashMessenger,
+        );
+        $response = $controller($request);
 
-        self::assertEquals(Message::success(), $GLOBALS['message']);
+        self::assertNotNull($response);
+        self::assertSame(StatusCodeInterface::STATUS_FOUND, $response->getStatusCode());
+        self::assertSame(
+            'index.php?route=/table/structure&db=test_db&table=test_table&lang=en',
+            $response->getHeaderLine('Location'),
+        );
+        self::assertSame(
+            [
+                [
+                    'context' => 'success',
+                    'message' => 'Your SQL query has been executed successfully.',
+                    'statement' => 'ALTER TABLE `test_table` ADD UNIQUE(`test_field`);',
+                ],
+            ],
+            $flashMessenger->getCurrentMessages(),
+        );
+
         /** @psalm-suppress TypeDoesNotContainType */
         self::assertSame('ALTER TABLE `test_table` ADD UNIQUE(`test_field`);', $GLOBALS['sql_query']);
         $dbiDummy->assertAllSelectsConsumed();
@@ -50,8 +70,7 @@ class UniqueControllerTest extends AbstractTestCase
     {
         Current::$database = 'test_db';
         Current::$table = 'test_table';
-        $GLOBALS['message'] = null;
-        $GLOBALS['sql_query'] = null;
+        $GLOBALS['sql_query'] = '';
 
         $dbiDummy = $this->createDbiDummy();
         $dbiDummy->addSelectDb('test_db');
@@ -60,14 +79,34 @@ class UniqueControllerTest extends AbstractTestCase
         DatabaseInterface::$instance = $dbi;
         $request = self::createStub(ServerRequest::class);
         $request->method('getParsedBodyParam')->willReturnMap([['selected_fld', [], ['test_field1', 'test_field2']]]);
-        $controllerStub = self::createMock(StructureController::class);
-        $controllerStub->expects(self::once())->method('__invoke')->with($request);
 
         $indexes = new Indexes(DatabaseInterface::getInstance());
-        $controller = new UniqueController(new ResponseRenderer(), $controllerStub, $indexes);
-        $controller($request);
+        $flashMessenger = new FlashMessenger();
+        $controller = new UniqueController(
+            new ResponseRenderer(),
+            $indexes,
+            ResponseFactory::create(),
+            $flashMessenger,
+        );
+        $response = $controller($request);
 
-        self::assertEquals(Message::success(), $GLOBALS['message']);
+        self::assertNotNull($response);
+        self::assertSame(StatusCodeInterface::STATUS_FOUND, $response->getStatusCode());
+        self::assertSame(
+            'index.php?route=/table/structure&db=test_db&table=test_table&lang=en',
+            $response->getHeaderLine('Location'),
+        );
+        self::assertSame(
+            [
+                [
+                    'context' => 'success',
+                    'message' => 'Your SQL query has been executed successfully.',
+                    'statement' => 'ALTER TABLE `test_table` ADD UNIQUE(`test_field1`, `test_field2`);',
+                ],
+            ],
+            $flashMessenger->getCurrentMessages(),
+        );
+
         /** @psalm-suppress TypeDoesNotContainType */
         self::assertSame('ALTER TABLE `test_table` ADD UNIQUE(`test_field1`, `test_field2`);', $GLOBALS['sql_query']);
         $dbiDummy->assertAllSelectsConsumed();
@@ -78,35 +117,32 @@ class UniqueControllerTest extends AbstractTestCase
     {
         Current::$database = 'test_db';
         Current::$table = 'test_table';
-        $GLOBALS['message'] = null;
-        $GLOBALS['sql_query'] = null;
 
         $dbi = $this->createDatabaseInterface();
         DatabaseInterface::$instance = $dbi;
         $request = self::createStub(ServerRequest::class);
         $request->method('getParsedBodyParam')->willReturnMap([['selected_fld', [], null]]);
-        $controllerStub = self::createMock(StructureController::class);
-        $controllerStub->expects(self::never())->method('__invoke');
-        $response = new ResponseRenderer();
+        $responseRenderer = new ResponseRenderer();
 
         $indexes = new Indexes(DatabaseInterface::getInstance());
-        $controller = new UniqueController($response, $controllerStub, $indexes);
-        $controller($request);
+        $controller = new UniqueController(
+            $responseRenderer,
+            $indexes,
+            ResponseFactory::create(),
+            new FlashMessenger(),
+        );
+        $response = $controller($request);
 
-        self::assertFalse($response->hasSuccessState());
-        self::assertSame(['message' => 'No column selected.'], $response->getJSONResult());
-        /** @psalm-suppress RedundantCondition */
-        self::assertNull($GLOBALS['message']);
-        /** @psalm-suppress RedundantCondition */
-        self::assertNull($GLOBALS['sql_query']);
+        self::assertNull($response);
+        self::assertFalse($responseRenderer->hasSuccessState());
+        self::assertSame(['message' => 'No column selected.'], $responseRenderer->getJSONResult());
     }
 
     public function testAddUniqueKeyWithError(): void
     {
         Current::$database = 'test_db';
         Current::$table = 'test_table';
-        $GLOBALS['message'] = null;
-        $GLOBALS['sql_query'] = null;
+        $GLOBALS['sql_query'] = '';
 
         $dbiDummy = $this->createDbiDummy();
         $dbiDummy->addSelectDb('test_db');
@@ -116,17 +152,34 @@ class UniqueControllerTest extends AbstractTestCase
         DatabaseInterface::$instance = $dbi;
         $request = self::createStub(ServerRequest::class);
         $request->method('getParsedBodyParam')->willReturnMap([['selected_fld', [], ['test_field']]]);
-        $controllerStub = self::createMock(StructureController::class);
-        $controllerStub->expects(self::once())->method('__invoke')->with($request);
 
         $indexes = new Indexes(DatabaseInterface::getInstance());
-        $controller = new UniqueController(new ResponseRenderer(), $controllerStub, $indexes);
-        $controller($request);
-
-        self::assertEquals(
-            Message::error('#1062 - Duplicate entry &#039;2&#039; for key &#039;test_field&#039;'),
-            $GLOBALS['message'],
+        $flashMessenger = new FlashMessenger();
+        $controller = new UniqueController(
+            new ResponseRenderer(),
+            $indexes,
+            ResponseFactory::create(),
+            $flashMessenger,
         );
+        $response = $controller($request);
+
+        self::assertNotNull($response);
+        self::assertSame(StatusCodeInterface::STATUS_FOUND, $response->getStatusCode());
+        self::assertSame(
+            'index.php?route=/table/structure&db=test_db&table=test_table&lang=en',
+            $response->getHeaderLine('Location'),
+        );
+        self::assertSame(
+            [
+                [
+                    'context' => 'danger',
+                    'message' => '#1062 - Duplicate entry &#039;2&#039; for key &#039;test_field&#039;',
+                    'statement' => 'ALTER TABLE `test_table` ADD UNIQUE(`test_field`);',
+                ],
+            ],
+            $flashMessenger->getCurrentMessages(),
+        );
+
         /** @psalm-suppress TypeDoesNotContainType */
         self::assertSame('ALTER TABLE `test_table` ADD UNIQUE(`test_field`);', $GLOBALS['sql_query']);
         $dbiDummy->assertAllSelectsConsumed();

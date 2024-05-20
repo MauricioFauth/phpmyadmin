@@ -249,10 +249,10 @@
                                     {{ get_icon('centralColumns_delete', t('Remove from central columns')) }}
                                 </a>
                             {% else %}
-                              <form class="disableAjax" action="{{ url('/table/structure/central-columns-add', {'db': db, 'table': table}) }}" method="post">
+                              <form id="addCentralColumnsForm" class="disableAjax" action="{{ url('/table/structure/central-columns-add', {'db': db, 'table': table}) }}" method="post">
                                 {{ get_hidden_inputs(db, table) }}
-                                <input type="hidden" name="selected_fld[]" value="{{ row.field }}">
-                                <button class="{{ hide_structure_actions ? 'dropdown-item' : 'nav-link px-1' }}" type="submit">
+                                <input type="hidden" name="selected_fld[]" value="{{ row.field }}" form="addCentralColumnsForm">
+                                <button class="{{ hide_structure_actions ? 'dropdown-item' : 'nav-link px-1' }}" type="submit" form="addCentralColumnsForm">
                                   {{ get_icon('centralColumns_add', t('Add to central columns')) }}
                                 </button>
                               </form>
@@ -294,16 +294,16 @@
             <button class="btn btn-link mult_submit" type="submit" formaction="{{ url('/table/structure/primary') }}">
               {{ get_icon('b_primary', t('Primary')) }}
             </button>
-            <button class="btn btn-link mult_submit" type="submit" formaction="{{ url('/table/structure/unique') }}">
+            <button class="btn btn-link mult_submit" type="submit" formaction="{{ url('/table/structure/unique', {'db': db, 'table': table}) }}">
               {{ get_icon('b_unique', t('Unique')) }}
             </button>
-            <button class="btn btn-link mult_submit" type="submit" formaction="{{ url('/table/structure/index') }}">
+            <button class="btn btn-link mult_submit" type="submit" formaction="{{ url('/table/structure/index', {'db': db, 'table': table}) }}">
               {{ get_icon('b_index', t('Index')) }}
             </button>
-            <button class="btn btn-link mult_submit" type="submit" formaction="{{ url('/table/structure/spatial') }}">
+            <button class="btn btn-link mult_submit" type="submit" formaction="{{ url('/table/structure/spatial', {'db': db, 'table': table}) }}">
               {{ get_icon('b_spatial', t('Spatial')) }}
             </button>
-            <button class="btn btn-link mult_submit" type="submit" formaction="{{ url('/table/structure/fulltext') }}">
+            <button class="btn btn-link mult_submit" type="submit" formaction="{{ url('/table/structure/fulltext', {'db': db, 'table': table}) }}">
               {{ get_icon('b_ftext', t('Fulltext')) }}
             </button>
 

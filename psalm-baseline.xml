@@ -4067,16 +4067,6 @@
       <code><![CDATA[empty($_POST['field_move_to'][$i])]]></code>
     </RiskyTruthyFalsyComparison>
   </file>
-  <file src="src/Controllers/Table/Structure/SpatialController.php">
-    <PossiblyUnusedReturnValue>
-      <code><![CDATA[Response|null]]></code>
-    </PossiblyUnusedReturnValue>
-  </file>
-  <file src="src/Controllers/Table/Structure/UniqueController.php">
-    <PossiblyUnusedReturnValue>
-      <code><![CDATA[Response|null]]></code>
-    </PossiblyUnusedReturnValue>
-  </file>
   <file src="src/Controllers/Table/StructureController.php">
     <DeprecatedMethod>
       <code><![CDATA[Config::getInstance()]]></code>
