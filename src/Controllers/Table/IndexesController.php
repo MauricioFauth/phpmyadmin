@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PhpMyAdmin\Controllers\Table;
 
 use PhpMyAdmin\Config;
-use PhpMyAdmin\Container\ContainerBuilder;
 use PhpMyAdmin\Controllers\InvocableController;
 use PhpMyAdmin\Current;
 use PhpMyAdmin\DatabaseInterface;
@@ -162,9 +161,10 @@ final class IndexesController implements InvocableController
                 return null;
             }
 
-            /** @var StructureController $controller */
-            $controller = ContainerBuilder::getContainer()->get(StructureController::class);
-            $controller($request);
+            $this->response->redirectToRoute(
+                '/table/structure',
+                ['db' => Current::$database, 'table' => Current::$table],
+            );
 
             return null;
         }
