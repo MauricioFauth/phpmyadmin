@@ -136,14 +136,13 @@
                           {% if type == 'text' or type == 'blob' or tbl_storage_engine == 'ARCHIVE' or (primary and primary.hasColumn(field_name)) %}
                             <span class="{{ hide_structure_actions ? 'dropdown-item-text' : 'nav-link px-1' }} disabled">{{ get_icon('bd_primary', t('Primary')) }}</span>
                           {% else %}
-                            <a rel="samepage" class="{{ hide_structure_actions ? 'dropdown-item' : 'nav-link px-1' }} ajax add_key d-print-none add_primary_key_anchor" href="{{ url('/table/structure/add-key') }}" data-post="{{ get_common({
-                              'db': db,
-                              'table': table,
-                              'sql_query': 'ALTER TABLE ' ~ backquote(table) ~ (primary ? ' DROP PRIMARY KEY,') ~ ' ADD PRIMARY KEY(' ~ backquote(row.field) ~ ');',
-                              'message_to_show': t('A primary key has been added on %s.')|format(row.field|e)
-                            }, '', false) }}">
-                              {{ get_icon('b_primary', t('Primary')) }}
-                            </a>
+                            <form id="addPrimaryIndexForm" class="disableAjax" action="{{ url('/table/structure/primary', {'db': db, 'table': table}) }}" method="post">
+                              {{ get_hidden_inputs(db, table) }}
+                              <input type="hidden" name="selected_fld[]" value="{{ row.field }}" form="addPrimaryIndexForm">
+                              <button class="{{ hide_structure_actions ? 'dropdown-item' : 'nav-link px-1' }} d-print-none" type="submit" form="addPrimaryIndexForm">
+                                {{ get_icon('b_primary', t('Primary')) }}
+                              </button>
+                            </form>
                           {% endif %}
                         </li>
 
@@ -151,14 +150,13 @@
                           {% if type == 'text' or type == 'blob' or tbl_storage_engine == 'ARCHIVE' %}
                             <span class="{{ hide_structure_actions ? 'dropdown-item-text' : 'nav-link px-1' }} disabled">{{ get_icon('bd_unique', t('Unique')) }}</span>
                           {% else %}
-                            <a rel="samepage" class="{{ hide_structure_actions ? 'dropdown-item' : 'nav-link px-1' }} ajax add_key d-print-none add_unique_anchor" href="{{ url('/table/structure/add-key') }}" data-post="{{ get_common({
-                              'db': db,
-                              'table': table,
-                              'sql_query': 'ALTER TABLE ' ~ backquote(table) ~ ' ADD UNIQUE(' ~ backquote(row.field) ~ ');',
-                              'message_to_show': t('An index has been added on %s.')|format(row.field|e)
-                            }, '', false) }}">
-                              {{ get_icon('b_unique', t('Unique')) }}
-                            </a>
+                            <form id="addUniqueIndexForm" class="disableAjax" action="{{ url('/table/structure/unique', {'db': db, 'table': table}) }}" method="post">
+                              {{ get_hidden_inputs(db, table) }}
+                              <input type="hidden" name="selected_fld[]" value="{{ row.field }}" form="addUniqueIndexForm">
+                              <button class="{{ hide_structure_actions ? 'dropdown-item' : 'nav-link px-1' }} d-print-none" type="submit" form="addUniqueIndexForm">
+                                {{ get_icon('b_unique', t('Unique')) }}
+                              </button>
+                            </form>
                           {% endif %}
                         </li>
 
@@ -166,14 +164,13 @@
                           {% if type == 'text' or type == 'blob' or tbl_storage_engine == 'ARCHIVE' %}
                             <span class="{{ hide_structure_actions ? 'dropdown-item-text' : 'nav-link px-1' }} disabled">{{ get_icon('bd_index', t('Index')) }}</span>
                           {% else %}
-                            <a rel="samepage" class="{{ hide_structure_actions ? 'dropdown-item' : 'nav-link px-1' }} ajax add_key d-print-none add_index_anchor" href="{{ url('/table/structure/add-key') }}" data-post="{{ get_common({
-                              'db': db,
-                              'table': table,
-                              'sql_query': 'ALTER TABLE ' ~ backquote(table) ~ ' ADD INDEX(' ~ backquote(row.field) ~ ');',
-                              'message_to_show': t('An index has been added on %s.')|format(row.field|e)
-                            }, '', false) }}">
-                              {{ get_icon('b_index', t('Index')) }}
-                            </a>
+                            <form id="addIndexForm" class="disableAjax" action="{{ url('/table/structure/index', {'db': db, 'table': table}) }}" method="post">
+                              {{ get_hidden_inputs(db, table) }}
+                              <input type="hidden" name="selected_fld[]" value="{{ row.field }}" form="addIndexForm">
+                              <button class="{{ hide_structure_actions ? 'dropdown-item' : 'nav-link px-1' }} d-print-none" type="submit" form="addIndexForm">
+                                {{ get_icon('b_index', t('Index')) }}
+                              </button>
+                            </form>
                           {% endif %}
                         </li>
 
@@ -191,14 +188,13 @@
                           {% if type == 'text' or type == 'blob' or tbl_storage_engine == 'ARCHIVE' or (type not in spatial_types and (tbl_storage_engine == 'MYISAM' or mysql_int_version >= 50705)) %}
                             <span class="{{ hide_structure_actions ? 'dropdown-item-text' : 'nav-link px-1' }} disabled">{{ get_icon('bd_spatial', t('Spatial')) }}</span>
                           {% else %}
-                            <a rel="samepage" class="{{ hide_structure_actions ? 'dropdown-item' : 'nav-link px-1' }} ajax add_key d-print-none add_spatial_anchor" href="{{ url('/table/structure/add-key') }}" data-post="{{ get_common({
-                              'db': db,
-                              'table': table,
-                              'sql_query': 'ALTER TABLE ' ~ backquote(table) ~ ' ADD SPATIAL(' ~ backquote(row.field) ~ ');',
-                              'message_to_show': t('An index has been added on %s.')|format(row.field|e)
-                            }, '', false) }}">
-                              {{ get_icon('b_spatial', t('Spatial')) }}
-                            </a>
+                            <form id="addSpatialIndexForm" class="disableAjax" action="{{ url('/table/structure/spatial', {'db': db, 'table': table}) }}" method="post">
+                              {{ get_hidden_inputs(db, table) }}
+                              <input type="hidden" name="selected_fld[]" value="{{ row.field }}" form="addSpatialIndexForm">
+                              <button class="{{ hide_structure_actions ? 'dropdown-item' : 'nav-link px-1' }} d-print-none" type="submit" form="addSpatialIndexForm">
+                                {{ get_icon('b_spatial', t('Spatial')) }}
+                              </button>
+                            </form>
                           {% endif %}
                         </li>
 
@@ -210,14 +206,13 @@
                                 or tbl_storage_engine == 'MARIA'
                                 or (tbl_storage_engine == 'INNODB' and mysql_int_version >= 50604)
                             ) and ('text' in type or 'char' in type) %}
-                            <a rel="samepage" class="{{ hide_structure_actions ? 'dropdown-item' : 'nav-link px-1' }} ajax add_key add_fulltext_anchor" href="{{ url('/table/structure/add-key') }}" data-post="{{ get_common({
-                              'db': db,
-                              'table': table,
-                              'sql_query': 'ALTER TABLE ' ~ backquote(table) ~ ' ADD FULLTEXT(' ~ backquote(row.field) ~ ');',
-                              'message_to_show': t('An index has been added on %s.')|format(row.field|e)
-                            }, '', false) }}">
+                          <form id="addFulltextIndexForm" class="disableAjax" action="{{ url('/table/structure/fulltext', {'db': db, 'table': table}) }}" method="post">
+                            {{ get_hidden_inputs(db, table) }}
+                            <input type="hidden" name="selected_fld[]" value="{{ row.field }}" form="addFulltextIndexForm">
+                            <button class="{{ hide_structure_actions ? 'dropdown-item' : 'nav-link px-1' }} d-print-none" type="submit" form="addFulltextIndexForm">
                               {{ get_icon('b_ftext', t('Fulltext')) }}
-                            </a>
+                            </button>
+                          </form>
                         {% else %}
                             <span class="{{ hide_structure_actions ? 'dropdown-item-text' : 'nav-link px-1' }} disabled">{{ get_icon('bd_ftext', t('Fulltext')) }}</span>
                         {% endif %}
@@ -291,7 +286,7 @@
           </button>
 
           {% if tbl_storage_engine != 'ARCHIVE' %}
-            <button class="btn btn-link mult_submit" type="submit" formaction="{{ url('/table/structure/primary') }}">
+            <button class="btn btn-link mult_submit" type="submit" formaction="{{ url('/table/structure/primary', {'db': db, 'table': table}) }}">
               {{ get_icon('b_primary', t('Primary')) }}
             </button>
             <button class="btn btn-link mult_submit" type="submit" formaction="{{ url('/table/structure/unique', {'db': db, 'table': table}) }}">

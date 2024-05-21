@@ -278,7 +278,6 @@ final class Routes
             $routes->addRoute(['GET', 'POST'], '/sql', Table\SqlController::class);
             $routes->addGroup('/structure', static function (RouteCollector $routes): void {
                 $routes->addRoute(['GET', 'POST'], '', Table\StructureController::class);
-                $routes->post('/add-key', Table\Structure\AddKeyController::class);
                 $routes->post('/browse', Table\Structure\BrowseController::class);
                 $routes->post('/central-columns-add', Table\Structure\CentralColumnsAddController::class);
                 $routes->post('/central-columns-remove', Table\Structure\CentralColumnsRemoveController::class);

@@ -1159,13 +1159,6 @@ return [
             'class' => Table\Structure\AddIndexController::class,
             'arguments' => ['@response', '@table_indexes', '@' . ResponseFactory::class, '@' . FlashMessenger::class],
         ],
-        Table\Structure\AddKeyController::class => [
-            'class' => Table\Structure\AddKeyController::class,
-            'arguments' => [
-                '$sqlController' => '@' . Sql\SqlController::class,
-                '$structureController' => '@' . Table\StructureController::class,
-            ],
-        ],
         Table\Structure\BrowseController::class => [
             'class' => Table\Structure\BrowseController::class,
             'arguments' => ['$response' => '@response', '$sql' => '@sql'],

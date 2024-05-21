@@ -54,7 +54,6 @@ function checkFirst () {
  */
 AJAX.registerTeardown('table/structure.js', function () {
     $(document).off('click', 'a.drop_column_anchor.ajax');
-    $(document).off('click', 'a.add_key.ajax');
     $(document).off('click', '#move_columns_anchor');
     $(document).off('submit', '.append_fields_form.ajax');
     $('body').off('click', '#fieldsForm button.mult_submit');
@@ -253,44 +252,6 @@ AJAX.registerOnload('table/structure.js', function () {
             }); // end $.post()
         });
     }); // end of Drop Column Anchor action
-
-    /**
-     * Ajax Event handler for adding keys
-     */
-    $(document).on('click', 'a.add_key.ajax', function (event) {
-        event.preventDefault();
-
-        var $this = $(this);
-        var currTableName = ($this.closest('form').find('input[name=table]').val() as string);
-        var currColumnName = $this.parents('tr').children('th').children('label').text().trim();
-
-        var addClause = '';
-        if ($this.is('.add_primary_key_anchor')) {
-            addClause = 'ADD PRIMARY KEY';
-        } else if ($this.is('.add_index_anchor')) {
-            addClause = 'ADD INDEX';
-        } else if ($this.is('.add_unique_anchor')) {
-            addClause = 'ADD UNIQUE';
-        } else if ($this.is('.add_spatial_anchor')) {
-            addClause = 'ADD SPATIAL';
-        } else if ($this.is('.add_fulltext_anchor')) {
-            addClause = 'ADD FULLTEXT';
-        }
-
-        var question = window.sprintf(window.Messages.strDoYouReally, 'ALTER TABLE `' +
-            escapeHtml(currTableName) + '` ' + addClause + '(`' + escapeHtml(currColumnName) + '`);');
-
-        var $thisAnchor = $(this);
-
-        $thisAnchor.confirm(question, $thisAnchor.attr('href'), function (url) {
-            ajaxShowMessage();
-            AJAX.source = $this;
-
-            var params = getJsConfirmCommonParam(this, $thisAnchor.getPostData());
-            params += CommonParams.get('arg_separator') + 'ajax_page_request=1';
-            $.post(url, params, AJAX.responseHandler);
-        });
-    }); // end Add key
 
     /**
      * Inline move columns

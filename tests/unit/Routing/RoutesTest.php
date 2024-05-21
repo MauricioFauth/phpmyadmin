@@ -296,7 +296,6 @@ final class RoutesTest extends TestCase
             '/table/search' => Table\SearchController::class,
             '/table/sql' => Table\SqlController::class,
             '/table/structure' => Table\StructureController::class,
-            '/table/structure/add-key' => Table\Structure\AddKeyController::class,
             '/table/structure/browse' => Table\Structure\BrowseController::class,
             '/table/structure/central-columns-add' => Table\Structure\CentralColumnsAddController::class,
             '/table/structure/central-columns-remove' => Table\Structure\CentralColumnsRemoveController::class,
