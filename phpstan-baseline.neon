@@ -4911,11 +4911,6 @@ parameters:
 			path: src/Controllers/Table/Structure/CentralColumnsAddController.php
 
 		-
-			message: "#^Construct empty\\(\\) is not allowed\\. Use more strict comparison\\.$#"
-			count: 1
-			path: src/Controllers/Table/Structure/CentralColumnsRemoveController.php
-
-		-
 			message: "#^Parameter \\#1 \\$selected of method PhpMyAdmin\\\\Controllers\\\\Table\\\\Structure\\\\ChangeController\\:\\:displayHtmlForColumnChange\\(\\) expects array\\<string\\>, array given\\.$#"
 			count: 1
 			path: src/Controllers/Table/Structure/ChangeController.php

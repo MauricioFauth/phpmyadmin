@@ -436,6 +436,7 @@ AJAX.registerOnload('table/structure.js', function () {
         const $form = $(this).parents('form');
         if (
             this.formAction.indexOf('/table/structure/central-columns-add') !== -1
+            || this.formAction.indexOf('/table/structure/central-columns-remove') !== -1
             || this.formAction.indexOf('/table/structure/unique') !== -1
             || this.formAction.indexOf('/table/structure/index') !== -1
             || this.formAction.indexOf('/table/structure/spatial') !== -1

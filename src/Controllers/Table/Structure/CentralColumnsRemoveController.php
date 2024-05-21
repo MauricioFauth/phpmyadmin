@@ -4,14 +4,17 @@ declare(strict_types=1);
 
 namespace PhpMyAdmin\Controllers\Table\Structure;
 
+use Fig\Http\Message\StatusCodeInterface;
 use PhpMyAdmin\Controllers\InvocableController;
-use PhpMyAdmin\Controllers\Table\StructureController;
 use PhpMyAdmin\Current;
 use PhpMyAdmin\Database\CentralColumns;
+use PhpMyAdmin\FlashMessenger;
+use PhpMyAdmin\Http\Factory\ResponseFactory;
 use PhpMyAdmin\Http\Response;
 use PhpMyAdmin\Http\ServerRequest;
 use PhpMyAdmin\Message;
 use PhpMyAdmin\ResponseRenderer;
+use PhpMyAdmin\Url;
 use Webmozart\Assert\Assert;
 
 use function __;
@@ -22,7 +25,8 @@ final class CentralColumnsRemoveController implements InvocableController
     public function __construct(
         private readonly ResponseRenderer $response,
         private readonly CentralColumns $centralColumns,
-        private readonly StructureController $structureController,
+        private readonly ResponseFactory $responseFactory,
+        private readonly FlashMessenger $flashMessenger,
     ) {
     }
 
@@ -43,16 +47,12 @@ final class CentralColumnsRemoveController implements InvocableController
 
         $centralColsError = $this->centralColumns->deleteColumnsFromList(Current::$database, $selected, false);
 
-        if ($centralColsError instanceof Message) {
-            $GLOBALS['message'] = $centralColsError;
-        }
+        $message = $centralColsError instanceof Message ? $centralColsError : Message::success(__('Success!'));
+        $this->flashMessenger->addMessage($message->getContext(), $message->getMessage());
 
-        if (empty($GLOBALS['message'])) {
-            $GLOBALS['message'] = Message::success();
-        }
-
-        ($this->structureController)($request);
-
-        return null;
+        return $this->responseFactory->createResponse(StatusCodeInterface::STATUS_FOUND)->withHeader(
+            'Location',
+            Url::getFromRoute('/table/structure', ['db' => Current::$database, 'table' => Current::$table]),
+        );
     }
 }

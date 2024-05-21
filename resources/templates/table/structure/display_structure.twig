@@ -241,13 +241,13 @@
                         {% if relation_parameters.centralColumnsFeature is not null %}
                             <li class="{{ not hide_structure_actions ? 'nav-item ' }}browse text-nowrap">
                             {% if row.field in central_list %}
-                                <a class="{{ hide_structure_actions ? 'dropdown-item' : 'nav-link px-1' }}" href="{{ url('/table/structure/central-columns-remove') }}" data-post="{{ get_common({
-                                  'db': db,
-                                  'table': table,
-                                  'selected_fld': [row.field],
-                                }) }}">
-                                    {{ get_icon('centralColumns_delete', t('Remove from central columns')) }}
-                                </a>
+                              <form id="removeCentralColumnsForm" class="disableAjax" action="{{ url('/table/structure/central-columns-remove', {'db': db, 'table': table}) }}" method="post">
+                                {{ get_hidden_inputs(db, table) }}
+                                <input type="hidden" name="selected_fld[]" value="{{ row.field }}" form="removeCentralColumnsForm">
+                                <button class="{{ hide_structure_actions ? 'dropdown-item' : 'nav-link px-1' }}" type="submit" form="removeCentralColumnsForm">
+                                  {{ get_icon('centralColumns_delete', t('Remove from central columns')) }}
+                                </button>
+                              </form>
                             {% else %}
                               <form id="addCentralColumnsForm" class="disableAjax" action="{{ url('/table/structure/central-columns-add', {'db': db, 'table': table}) }}" method="post">
                                 {{ get_hidden_inputs(db, table) }}
@@ -311,7 +311,7 @@
               <button class="btn btn-link mult_submit" type="submit" formaction="{{ url('/table/structure/central-columns-add', {'db': db, 'table': table}) }}">
                 {{ get_icon('centralColumns_add', t('Add to central columns')) }}
               </button>
-              <button class="btn btn-link mult_submit" type="submit" formaction="{{ url('/table/structure/central-columns-remove') }}">
+              <button class="btn btn-link mult_submit" type="submit" formaction="{{ url('/table/structure/central-columns-remove', {'db': db, 'table': table}) }}">
                 {{ get_icon('centralColumns_delete', t('Remove from central columns')) }}
               </button>
             {% endif %}

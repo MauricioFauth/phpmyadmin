@@ -1176,11 +1176,7 @@ return [
         ],
         Table\Structure\CentralColumnsRemoveController::class => [
             'class' => Table\Structure\CentralColumnsRemoveController::class,
-            'arguments' => [
-                '$response' => '@response',
-                '$centralColumns' => '@central_columns',
-                '$structureController' => '@' . Table\StructureController::class,
-            ],
+            'arguments' => ['@response', '@central_columns', '@' . ResponseFactory::class, '@' . FlashMessenger::class],
         ],
         Table\Structure\ChangeController::class => [
             'class' => Table\Structure\ChangeController::class,
