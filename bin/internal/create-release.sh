@@ -128,7 +128,7 @@ mark_as_release() {
 
 cleanup_composer_vendors() {
     echo "* Cleanup of composer packages"
-    rm -rf \
+    rm -r \
         vendor/phpmyadmin/sql-parser/tests/ \
         vendor/phpmyadmin/sql-parser/tools/ \
         vendor/phpmyadmin/sql-parser/src/Tools/ \
@@ -222,7 +222,7 @@ cleanup_composer_vendors() {
         vendor/google/recaptcha/.github/ \
         vendor/google/recaptcha/examples/ \
         vendor/google/recaptcha/tests/
-    rm -rf \
+    rm -r \
         vendor/google/recaptcha/ARCHITECTURE.md \
         vendor/google/recaptcha/CONTRIBUTING.md \
         vendor/phpmyadmin/motranslator/CODE_OF_CONDUCT.md \
